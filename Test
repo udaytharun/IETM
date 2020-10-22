@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="details.json"></script>
+    <link rel="stylesheet" type="text/css" href="theme.css">
+</head>
+<body>
+    <header>
+        <div id="company-details">
+            <div id="logo">
+                <img src="logo.png" width="100px">
+            </div>
+            <div id="details">    
+                MICRO PRECISION<br/>
+                Plot Nos. 236 & 237, Industrial Complex, <br/>
+                Nehru Nagar, Perungudi, <br/>
+                Chennai - 600 096
+            </div>
+        </div>
+        <div id="po-details">
+            <pre>
+                Purchase Order No.   : 
+                Customer                    : Defence Machinery Design Establishment, Secunderabad
+                Project Description    : 
+            </pre>
+        </div>
+    </header>
+    <div class="container">
+        <div class='table-div' >
+            <table>
+                <thead>
+                    <tr>
+                        <th>Unique-BOM-ID</th>
+                        <th>Description</th>
+                        <th>Size</th>
+                        <th>Material</th>
+                        <th>Quantity</th>
+                    </tr>
+		</thead>
+		<tbody id ="master-table">
+		<tr>
+		<td><a href="#" class="bom-id" id="1">ES2524-1.1</a></td>
+		<td>Body</td>
+		<td>Ø56x125</td>
+		<td>ASTM A276 SS 321</td>
+		<td>1</td>
+		</tbody>
+	</table>
+	</div>
+	<div class="document-view">
+            List of Available Documents
+            <div class="collapsible-list">
+                <ol id="doc-tree">
+                    Click on the BOM ID to view the available documents.
+                </ol>
+            </div>
+        </div>
+    </div>
+    	<script type="text/javascript">
+	$(document).ready(function(){
+		$("ul").hide();
+		
+		var data =var data ={"1": {"bom-id": "ES2524-1.1", "description": "body", "size": "Ø56x125", "material": "ASTM A276 SS 321", "docs": [{"Flange": {"material": "CA104", "size": "150", "lot": "II", "rm": {"c&m": ["24-25.pdf"], "forge": ["68-69.pdf"], "ut": ["122-123.pdf"]}, "ip": {"c&m": ["150-153.pdf"], "ht": ["439-440.pdf"], "ut": ["581-582.pdf"]}, "final": {"vi&di": ["656-657.pdf"], "hydro": ["1448-1449.pdf"], "lpt": ["1812-1813.pdf"], "pp": ["1894-1896.pdf"], "cdi": ["1910-1912.pdf"]}}}]
+
+var description = {
+                "c&m":"Chemical & Mechanical Properties",
+                "forge":"Forgeability Test",
+                "ut": "Ultrasonic Test",
+                "ht":"Heat Treatment Report",
+                "vi&di":"VI, DI, Surface Finish & Weight",
+                "hydro":"Hydrostatic Test",
+                "lpt":"Liquid Penetrant Test",
+                "pp":"Packing & Preservation Certificate",
+                "cdi":"CDI Protocol",
+                "warranty":"Warranty Certificate",
+                "crv":"Comprehensive Receipt Voucher",
+                "form4":"Form-IV/I-Note",
+                "cc":"Confirmity Certificate"
+		};
+	   $('a.bom-id').click(function(e){
+                var key = $(this).attr('id');
+                docs = data[key]['docs']
+                $('#doc-tree').empty();
+                $('#doc-tree').append('BOM ID - '+ data[key]['bomid']);
+                var drgno = "<li><a href=./Drawings/"+data[key]['bomid']+".pdf class='doc-link'>Drawing</a>";
+               $('a.bom-id').click(function(e){
+                var key = $(this).attr('id');
+                docs = data[key]['docs']
+                $('#doc-tree').empty();
+                $('#doc-tree').append('bom-id - '+ data[key]['bom-id']);
+                var drgno = "<li><a href=./Drawings/"+data[key]['bom-id']+".pdf class='doc-link'>Drawing</a>";
+                $('#doc-tree').append(drgno);
+                for(var i=0; i<docs.length; i++){
+                    var type = Object.keys(docs[i]) 
+                    var headlist = "<li>"+type;
+                    var rmlist="<ul><li>Raw Material Stage</li><ul>";
+                    var iplist="<ul><li>In-Process Stage</li><ul>";
+                    var finlist="<ul><li>Final Stage</li><ul>";
+                    var typedoc = docs[i][type]
+                    var rmdoctype = Object.keys(typedoc['rm'])
+                    for(var k=0;k<rmdoctype.length;k++){
+                        var lists = typedoc['rm']
+                        if(lists[rmdoctype[k]]){
+                            for(var l=0; l<lists[rmdoctype[k]].length;l++){
+                                var elem = "<li><a href="+'./Paged_Files/'+lists[rmdoctype[k]][l]+" class='doc-link'>"+description[rmdoctype[k]]+"</a></li>"
+                                rmlist+=elem;
+                            }
+                        }
+                    }
+                    rmlist+="</ul></ul>"
+                    var ipdoctype = Object.keys(typedoc['ip'])
+                    for(var k=0;k<ipdoctype.length;k++){
+                        var lists = typedoc['ip']
+                        if(lists[ipdoctype[k]]){
+                            for(var l=0; l<lists[ipdoctype[k]].length;l++){
+                                var elem = "<li><a href="+'./Paged_Files/'+lists[ipdoctype[k]][l]+" class='doc-link'>"+description[ipdoctype[k]]+"</a></li>"
+                                iplist+=elem;
+                            }
+                        }
+                    }
+                    iplist+="</ul></ul>"
+                    var findoctype = Object.keys(typedoc['final'])
+                    for(var k=0;k<findoctype.length;k++){
+                        var lists = typedoc['final']
+                        if(lists[findoctype[k]]){
+                            for(var l=0; l<lists[findoctype[k]].length;l++){
+                                var elem = "<li><a href="+'./Paged_Files/'+lists[findoctype[k]][l]+" class='doc-link'>"+description[findoctype[k]]+"</a></li>"
+                                finlist+=elem;
+                            }
+                        }
+                    }
+                    finlist+="</ul></ul>"
+                    
+                    $('#doc-tree').append(headlist);
+                    $('#doc-tree').append(rmlist);
+                    $('#doc-tree').append(iplist);
+                    $('#doc-tree').append(finlist);
+                }
+                return false;
+            });
+
+             $('.collapsible-list').on('click', 'a.doc-link', function(e){
+                window.open(this.href, 'pop', 'height=720,width=1024');
+                return false;
+            });
+
+        });
+    </script>
+</body>
+</html>
